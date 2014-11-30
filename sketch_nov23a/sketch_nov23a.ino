@@ -14,7 +14,7 @@
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); 
 
 // IR sensor constants (sensorB)
-int sensorPin = 0;
+#define sensorPin 0
 
 // Test components
 void motorTest(){
@@ -32,7 +32,7 @@ void motorTest(){
 }
 
 void sensorATest(){
-  delay(500);                      // Wait 500ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
+  delay(500);                      
   unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
   Serial.print("Ping: ");
   Serial.print(uS / US_ROUNDTRIP_CM); // Convert ping time to distance in cm and print result (0 = outside set distance range)
@@ -42,8 +42,6 @@ void sensorATest(){
 void sensorBTest(){
   int val = analogRead(sensorPin);
   Serial.println(val);
-
-  //just to slow down the output - remove if trying to catch an object passing by
   delay(200);
 }
 
@@ -51,13 +49,15 @@ void sensorBTest(){
 
 void botMe(){
   
-   int narrow = analogRead(sensorPin); // returns a number between
+   unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
+   int wide = uS / US_ROUNDTRIP_CM; // Convert to cm, returns a number between 1 and MAX_DISTANCE
+   int narrow = analogRead(sensorPin); // returns a number between 0 and 300 
 
    int fear = (7 * narrow) + (3 * wide)
    fear = map(fear, 0, narrow + wide, 0, 255) // some integer between 0 and 255, fed by the sesnsors
    
    analogWrite(fadePin, fear);
-   delay(5);
+   delay(50);
 
 }
 
@@ -70,7 +70,8 @@ void setup(){
 }
 
 void loop(){
- // motorTest();
+ motorTest();
  // sensorA();
  // sensorB();
+// botMe();
 }
