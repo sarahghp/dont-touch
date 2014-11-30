@@ -16,7 +16,7 @@ NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 // IR sensor constants (sensorB)
 #define sensorPin 0
 
-// Test components
+// Tests
 void motorTest(){
   for(int i = 0; i<360; i++){
   //convert 0-360 angle to radian (needed for sin function)
@@ -49,19 +49,20 @@ void sensorBTest(){
 
 void botMe(){
   
+  // Input from A  
    unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
    int wide = (uS / US_ROUNDTRIP_CM); // Convert to cm, returns a number between 1 and MAX_DISTANCE
    wide = map(wide, 0, MAX_DISTANCE, MAX_DISTANCE, 0);
    
+  // Input from B
    int narrow = analogRead(sensorPin); // returns a number between 0 and 300 
-//     int narrow = 0;
 
-   int fear = (narrow * 4) + (wide * .55);
-   fear < 60 && (fear = 0);
-// fear = map(fear, 0, 800, 0, 255); // some integer between 0 and 255, fed by the sesnsors
-   fear = map(fear, 0, 1100, 0, 255); // some integer between 0 and 255, fed by the sesnsors
+  // Combine inputs
+   int fear = (narrow * 4) + (wide * .5);
+   fear < 80 && (fear = 0);
+   fear = map(fear, 0, 800 + MAX_DISTANCE, 0, 255); // some integer between 0 and 255, fed by the sesnsors
 
-   
+  // Send to motor   
    analogWrite(fadePin, fear);
    delay(50);
 
@@ -79,5 +80,5 @@ void loop(){
 // motorTest();
 // sensorATest();
 // sensorBTest();
-// botMe();
+ botMe();
 }
