@@ -50,11 +50,17 @@ void sensorBTest(){
 void botMe(){
   
    unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
-   int wide = uS / US_ROUNDTRIP_CM; // Convert to cm, returns a number between 1 and MAX_DISTANCE
+   int wide = (uS / US_ROUNDTRIP_CM); // Convert to cm, returns a number between 1 and MAX_DISTANCE
+   wide = map(wide, 0, MAX_DISTANCE, MAX_DISTANCE, 0);
+   
    int narrow = analogRead(sensorPin); // returns a number between 0 and 300 
+//     int narrow = 0;
 
-   int fear = (7 * narrow) + (3 * wide)
-   fear = map(fear, 0, narrow + wide, 0, 255) // some integer between 0 and 255, fed by the sesnsors
+   int fear = (narrow * 4) + wide;
+   fear < 60 && (fear = 0);
+// fear = map(fear, 0, 800, 0, 255); // some integer between 0 and 255, fed by the sesnsors
+   fear = map(fear, 0, 1100, 0, 255); // some integer between 0 and 255, fed by the sesnsors
+
    
    analogWrite(fadePin, fear);
    delay(50);
@@ -70,8 +76,8 @@ void setup(){
 }
 
 void loop(){
- motorTest();
- // sensorA();
- // sensorB();
+// motorTest();
+// sensorATest();
+// sensorBTest();
 // botMe();
 }
