@@ -56,7 +56,7 @@ void botMe(){
    int narrow = analogRead(sensorPin); // returns a number between 0 and 300 
 //     int narrow = 0;
 
-   int fear = (narrow * 4) + wide;
+   int fear = (narrow * 4) + (wide * .55);
    fear < 60 && (fear = 0);
 // fear = map(fear, 0, 800, 0, 255); // some integer between 0 and 255, fed by the sesnsors
    fear = map(fear, 0, 1100, 0, 255); // some integer between 0 and 255, fed by the sesnsors
