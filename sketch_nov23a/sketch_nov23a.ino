@@ -10,7 +10,7 @@
 #include <NewPing.h>
 #define TRIGGER_PIN  2 
 #define ECHO_PIN     4
-#define MAX_DISTANCE 200
+#define MAX_DISTANCE 100
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); 
 
 // IR sensor constants (sensorB)
@@ -45,6 +45,12 @@ void sensorBTest(){
   delay(200);
 }
 
+// Calibrate
+
+void calculateMin(int* minRange, int narrow, int wide){
+  *minRange = max(*minRange, max(narrow, wide)); 
+}
+
 // Actual bot code
 
 void botMe(){
@@ -53,18 +59,38 @@ void botMe(){
    unsigned int uS = sonar.ping(); // Send ping, get ping time in microseconds (uS).
    int wide = (uS / US_ROUNDTRIP_CM); // Convert to cm, returns a number between 1 and MAX_DISTANCE
    wide = map(wide, 0, MAX_DISTANCE, MAX_DISTANCE, 0);
+   Serial.print("Wide: ");
+   Serial.println(wide);
+   wide > 50 && (wide = 0);
    
   // Input from B
-   int narrow = analogRead(sensorPin); // returns a number between 0 and 300 
-
-  // Combine inputs
-   int fear = (narrow * 4) + (wide * .5);
-   fear < 80 && (fear = 0);
-   fear = map(fear, 0, 800 + MAX_DISTANCE, 0, 255); // some integer between 0 and 255, fed by the sesnsors
+   int narrow = analogRead(sensorPin); // returns a number between 0 and 500
+   narrow = map(narrow, 1, 630, 1, 80); //  which corresponds to 10 to 80cm
+   
+  // Get calibrations
+  int minRange = 1;
+  int maxRange = MAX_DISTANCE + 200;
+  
+  if (millis() % 5000 == 0) 
+    calculateMin(&minRange, narrow, wide);
+  
+//  Serial.print("Min: ");
+//  Serial.println(minRange);
+//  Serial.print("Max: ");
+//  Serial.println(maxRange);
+  
+  
+   // Combine inputs
+   int fear = (3 * narrow) + wide;
+   Serial.print("Pre-map: ");
+   Serial.println(fear);
+   fear = map(fear, 0, maxRange, 0, 255); // some integer between 0 and 255, fed by the sesnsors
+   Serial.print("Post-map: ");
+   Serial.println(fear);
 
   // Send to motor   
    analogWrite(fadePin, fear);
-   delay(50);
+   delay(500);
 
 }
 
@@ -80,5 +106,5 @@ void loop(){
 // motorTest();
 // sensorATest();
 // sensorBTest();
- botMe();
+  botMe();
 }
