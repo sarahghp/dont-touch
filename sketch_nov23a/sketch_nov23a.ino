@@ -66,10 +66,11 @@ void botMe(){
   // Input from B
    int narrow = analogRead(sensorPin); // returns a number between 0 and 500
    narrow = map(narrow, 1, 630, 1, 80); //  which corresponds to 10 to 80cm
+   int multiplier = 3; // how much to weight narrow
    
   // Get calibrations
   int minRange = 1;
-  int maxRange = MAX_DISTANCE + 200;
+  int maxRange = MAX_DISTANCE + (100 * multiplier);
   
   if (millis() % 5000 == 0) 
     calculateMin(&minRange, narrow, wide);
@@ -81,7 +82,7 @@ void botMe(){
   
   
    // Combine inputs
-   int fear = (3 * narrow) + wide;
+   int fear = (multiplier * narrow) + wide;
    Serial.print("Pre-map: ");
    Serial.println(fear);
    fear = map(fear, 0, maxRange, 0, 255); // some integer between 0 and 255, fed by the sesnsors
