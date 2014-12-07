@@ -61,7 +61,7 @@ void botMe(){
    wide = map(wide, 0, MAX_DISTANCE, MAX_DISTANCE, 0);
    Serial.print("Wide: ");
    Serial.println(wide);
-   wide > 50 && (wide = 0);
+   wide > 65 && (wide = 0);
    
   // Input from B
    int narrow = analogRead(sensorPin); // returns a number between 0 and 500
@@ -85,12 +85,14 @@ void botMe(){
    Serial.print("Pre-map: ");
    Serial.println(fear);
    fear = map(fear, 0, maxRange, 0, 255); // some integer between 0 and 255, fed by the sesnsors
+   fear < 20 && (fear = 0); // reduce whine
+   (fear > 20 && fear < 45) && (fear = 45); // reduce whine but add in power
    Serial.print("Post-map: ");
    Serial.println(fear);
 
   // Send to motor   
    analogWrite(fadePin, fear);
-   delay(500);
+   delay(50);
 
 }
 
