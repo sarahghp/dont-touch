@@ -74,13 +74,7 @@ void botMe(){
   
   if (millis() % 5000 == 0) 
     calculateMin(&minRange, narrow, wide);
-  
-//  Serial.print("Min: ");
-//  Serial.println(minRange);
-//  Serial.print("Max: ");
-//  Serial.println(maxRange);
-  
-  
+    
    // Combine inputs
    int fear = (multiplier * narrow) + wide;
    Serial.print("Pre-map: ");
